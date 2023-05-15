@@ -1,4 +1,6 @@
 gem 'simplecov', require: false, group: :test
+gem 'faraday'
+gem 'figaro'
 
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
@@ -44,10 +46,21 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
+  gem "capybara"
+  gem "launchy"
+  gem "orderly"
+  gem "shoulda-matchers"
+end
+
+group :test do
+  gem 'vcr'
+  gem 'webmock'
+  gem 'coderay'
 end
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem 'rubocop-rails'
 end
 
