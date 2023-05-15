@@ -50,6 +50,7 @@ group :development, :test do
   gem "launchy"
   gem "orderly"
   gem "shoulda-matchers"
+  gem 'pry'
 end
 
 group :test do
