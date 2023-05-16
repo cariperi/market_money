@@ -3,7 +3,7 @@ class MarketsFacade
     if Market.exists?(id: id)
       Market.find(id)
     else
-      ErrorMarket.new("Couldn't find Market with 'id'=#{id}", "NOT FOUND", 404)
+      Error.new("Couldn't find Market with 'id'=#{id}", "NOT FOUND", 404)
     end
   end
 end
