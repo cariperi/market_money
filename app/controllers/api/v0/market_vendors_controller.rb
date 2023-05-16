@@ -4,7 +4,7 @@ class Api::V0::MarketVendorsController < ApplicationController
     if market.class == Market
       render json: VendorSerializer.new(market.vendors)
     else
-      render json: ErrorSerializer.format_error(market), status: 404
+      render json: ErrorSerializer.format_error(market), status: market.code
     end
   end
 end
