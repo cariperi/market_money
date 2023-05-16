@@ -1,4 +1,4 @@
-class ErrorMarket
+class Error
   attr_reader :detail, :status, :code
 
   def initialize(detail, status, code)
