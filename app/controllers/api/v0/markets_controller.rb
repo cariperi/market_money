@@ -8,7 +8,7 @@ class Api::V0::MarketsController < ApplicationController
     if market.class == Market
       render json: MarketSerializer.format_market(market)
     else
-      render json: ErrorMarketSerializer.format_error_market(market), status: 404
+      render json: ErrorSerializer.format_error(market), status: 404
     end
   end
 end
