@@ -73,17 +73,17 @@ describe 'Market Vendor Endpoints' do
   end
 
   describe 'Create a Market Vendor' do
-    xit 'can create a new association between a market and a vendor with valid ids' do
+    it 'can create a new association between a market and a vendor with valid ids' do
       market = create(:market)
       vendor = create(:vendor)
 
-      params = ({
+      market_vendor_params = ({
         market_id: market.id,
         vendor_id: vendor.id
       })
       headers = {"CONTENT_TYPE" => "application/json"}
 
-      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(params: params)
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
 
       expect(response).to be_successful
       expect(response.status).to eq(201)
@@ -92,6 +92,103 @@ describe 'Market Vendor Endpoints' do
       expect(data).to have_key(:message)
 
       expect(data[:message]).to eq("Successfully added vendor to market")
+
+      get "/api/v0/markets/#{market.id}/vendors"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:data)
+
+      vendors = data[:data]
+      expect(vendors).to be_an(Array)
+      expect(vendors.count).to eq(1)
+
+      new_vendor = vendors[0]
+      expect(new_vendor[:id]).to eq(vendor.id.to_s)
+    end
+
+    it 'returns a custom error message if the market id is invalid' do
+      vendor = create(:vendor)
+
+      market_vendor_params = ({
+        market_id: 5,
+        vendor_id: vendor.id
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:errors)
+
+      error = data[:errors][0][:detail]
+      expect(error).to eq("Validation failed: Market must exist")
+    end
+
+    it 'returns a custom error message if the vendor id is invalid' do
+      market = create(:market)
+
+      market_vendor_params = ({
+        market_id: market.id,
+        vendor_id: 5
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:errors)
+
+      error = data[:errors][0][:detail]
+      expect(error).to eq("Validation failed: Vendor must exist")
+    end
+
+    it 'returns a custom error message if vendor id and / or market id are not passed in' do
+      market_vendor_params = ({
+        vendor_id: 5
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:message)
+
+      expect(data[:message]).to eq("Market ID and Vendor ID must be provided")
+    end
+
+    it 'returns a custom error mesage if the association already exists' do
+      market_1 = create(:market)
+      vendor_1 = create(:vendor)
+      MarketVendor.create!(market: market_1, vendor: vendor_1)
+
+      market_vendor_params = ({
+        market_id: market_1.id,
+        vendor_id: vendor_1.id
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:errors)
+
+      error = data[:errors][0][:detail]
+      expect(error).to eq("Validation failed: Market vendor association between market with market_id=#{market_1.id} and vendor_id=#{vendor_1.id} already exists")
     end
   end
 end
