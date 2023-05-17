@@ -43,11 +43,13 @@ class Api::V0::MarketVendorsController < ApplicationController
     def render_id_not_found_response(model)
       errors = model.errors.full_messages.join(", ")
       error_message = "Validation failed: #{errors}"
-      render json: ErrorSerializer.format_error(error_message), status: 404
+      error = Error.new(error_message, 404)
+      render json: ErrorSerializer.format_error(error), status: error.status_code
     end
 
     def render_record_exists_response(model)
       error_message = "Validation failed: Market vendor association between market with market_id=#{model.market_id} and vendor_id=#{model.vendor_id} already exists"
-      render json: ErrorSerializer.format_error(error_message), status: 422
+      error = Error.new(error_message, 422)
+      render json: ErrorSerializer.format_error(error), status: error.status_code
     end
 end
