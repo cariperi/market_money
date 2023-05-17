@@ -1,9 +1,9 @@
 class ErrorSerializer
-  def self.format_error(error_message)
+  def self.format_error(error)
     {
       errors: [
         {
-          detail: error_message
+          detail: error.message
         }
       ]
     }
