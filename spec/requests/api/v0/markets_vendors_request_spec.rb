@@ -71,4 +71,27 @@ describe 'Market Vendor Endpoints' do
       expect(error).to eq("Couldn't find Market with 'id'=5")
     end
   end
+
+  describe 'Create a Market Vendor' do
+    xit 'can create a new association between a market and a vendor with valid ids' do
+      market = create(:market)
+      vendor = create(:vendor)
+
+      params = ({
+        market_id: market.id,
+        vendor_id: vendor.id
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post "/api/v0/market_vendors", headers: headers, params: JSON.generate(params: params)
+
+      expect(response).to be_successful
+      expect(response.status).to eq(201)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:message)
+
+      expect(data[:message]).to eq("Successfully added vendor to market")
+    end
+  end
 end

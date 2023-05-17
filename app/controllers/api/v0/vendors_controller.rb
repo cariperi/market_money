@@ -1,43 +1,39 @@
 class Api::V0::VendorsController < ApplicationController
+  before_action :find_vendor, only: [:show, :update, :destroy]
+
   def show
-    vendor = VendorsFacade.find_vendor(params[:id])
-    if vendor.class == Vendor
-      render json: VendorSerializer.new(vendor)
-    else
-      render json: ErrorSerializer.format_error(vendor), status: vendor.code
-    end
+    render json: VendorSerializer.new(@vendor)
   end
 
   def create
-    vendor = VendorsFacade.create_vendor(vendor_params)
-    if vendor.class == Vendor
+    vendor = Vendor.create(vendor_params)
+    if vendor.valid?
       render json: VendorSerializer.new(vendor), status: 201
     else
-      render json: ErrorSerializer.format_error(vendor), status: vendor.code
+      render_failed_validation_response(vendor)
     end
   end
 
   def update
-    vendor = VendorsFacade.update_vendor(params[:id], vendor_params)
-    if vendor.class == Vendor
-      render json: VendorSerializer.new(vendor)
+    if @vendor.update(vendor_params)
+      render json: VendorSerializer.new(@vendor)
     else
-      render json: ErrorSerializer.format_error(vendor), status: vendor.code
+      render_failed_validation_response(@vendor)
     end
   end
 
   def destroy
-    vendor = VendorsFacade.find_vendor(params[:id])
-    if vendor.class == Vendor
-      render json: vendor.destroy, status: 204
-    else
-      render json: ErrorSerializer.format_error(vendor), status: vendor.code
-    end
+    render json: @vendor.destroy, status: 204
   end
 
   private
 
     def vendor_params
       params.require(:vendor).permit(:name, :description, :contact_name, :contact_phone, :credit_accepted)
+    end
+
+    def find_vendor
+      @vendor = Vendor.find_by(id: params[:id])
+      render_not_found_response(Vendor, params[:id]) if @vendor.nil?
     end
 end
