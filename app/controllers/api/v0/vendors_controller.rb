@@ -26,6 +26,15 @@ class Api::V0::VendorsController < ApplicationController
     end
   end
 
+  def destroy
+    vendor = VendorsFacade.find_vendor(params[:id])
+    if vendor.class == Vendor
+      render json: vendor.destroy, status: 204
+    else
+      render json: ErrorSerializer.format_error(vendor), status: vendor.code
+    end
+  end
+
   private
 
     def vendor_params
