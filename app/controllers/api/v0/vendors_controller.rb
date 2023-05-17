@@ -17,6 +17,15 @@ class Api::V0::VendorsController < ApplicationController
     end
   end
 
+  def update
+    vendor = VendorsFacade.update_vendor(params[:id], vendor_params)
+    if vendor.class == Vendor
+      render json: VendorSerializer.new(vendor)
+    else
+      render json: ErrorSerializer.format_error(vendor), status: vendor.code
+    end
+  end
+
   private
 
     def vendor_params
