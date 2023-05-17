@@ -1,14 +1,18 @@
 class Api::V0::MarketsController < ApplicationController
+  before_action :find_market, only: [:show]
+
   def index
     render json: MarketSerializer.new(Market.all)
   end
 
   def show
-    market = MarketsFacade.find_market(params[:id])
-    if market.class == Market
-      render json: MarketSerializer.new(market)
-    else
-      render json: ErrorSerializer.format_error(market), status: market.code
-    end
+    render json: MarketSerializer.new(@market)
   end
+
+  private
+
+    def find_market
+      @market = Market.find_by(id: params[:id])
+      render_not_found_response(Market, params[:id]) if @market.nil?
+    end
 end
