@@ -185,4 +185,57 @@ describe 'Market Vendor Endpoints' do
       expect(error).to eq("Validation failed: Market vendor association between market with market_id=#{market_1.id} and vendor_id=#{vendor_1.id} already exists")
     end
   end
+
+  describe 'Delete a Market Vendor' do
+    it 'can destroy an association between a market and a vendor when ids are valid' do
+      vendor = create(:vendor)
+      market = create(:market)
+      mv = MarketVendor.create(market_id: market.id, vendor_id: vendor.id)
+
+      market_vendor_params = ({
+        market_id: market.id,
+        vendor_id: vendor.id
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      delete "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to be_successful
+      expect(response.status).to eq(204)
+      expect(response.body).to eq("")
+
+      expect{MarketVendor.find(mv.id)}.to raise_error(ActiveRecord::RecordNotFound)
+
+      get "/api/v0/markets/#{market.id}/vendors"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:data)
+
+      vendors = data[:data]
+      expect(vendors).to be_an(Array)
+      expect(vendors.count).to eq(0)
+    end
+
+    it 'returns an error message if no Market Vendor exists with the given ids' do
+      market_vendor_params = ({
+        market_id: 1,
+        vendor_id: 2
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      delete "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:errors)
+
+      error = data[:errors][0][:detail]
+      expect(error).to eq("No MarketVendor with market_id=1 AND vendor_id=2 exists")
+    end
+  end
 end
