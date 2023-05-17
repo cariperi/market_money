@@ -247,4 +247,39 @@ describe 'Vendor Endpoints' do
       expect(error).to eq("Couldn't find Vendor with 'id'=5")
     end
   end
+
+  describe 'Delete a Vendor' do
+    it 'can delete a vendor record and its associations when a valid id is passed in' do
+      vendor_1 = create(:vendor)
+      vendor_2 = create(:vendor)
+      market_1 = create(:market)
+      market_2 = create(:market)
+
+      mv_1 = MarketVendor.create(market_id: market_1, vendor_id: vendor_1)
+      mv_2 = MarketVendor.create(market_id: market_2, vendor_id: vendor_1)
+
+      expect{ delete "/api/v0/vendors/#{vendor_1.id}" }.to change(Vendor, :count).by(-1)
+
+      expect(response).to be_successful
+      expect(response.status).to eq(204)
+      expect(response.body).to eq("")
+
+      expect{Vendor.find(vendor_1.id)}.to raise_error(ActiveRecord::RecordNotFound)
+      expect{MarketVendor.find(mv_1.id)}.to raise_error(ActiveRecord::RecordNotFound)
+      expect{MarketVendor.find(mv_2.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'sends a custom error if the vendor record does not exist' do
+      delete "/api/v0/vendors/5"
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to have_key(:errors)
+
+      error = data[:errors][0][:detail]
+      expect(error).to eq("Couldn't find Vendor with 'id'=5")
+    end
+  end
 end
