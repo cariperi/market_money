@@ -17,4 +17,16 @@ class VendorsFacade
       Error.new("Validation failed: #{errors}", "BAD REQUEST", 400)
     end
   end
+
+  def self.update_vendor(id, params)
+    vendor = find_vendor(id)
+    return vendor if vendor.class != Vendor
+
+    if vendor.update(params)
+      vendor
+    else
+      errors = vendor.errors.full_messages.join(", ")
+      Error.new("Validation failed: #{errors}", "BAD REQUEST", 400)
+    end
+  end
 end
