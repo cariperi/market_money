@@ -40,17 +40,11 @@ describe 'Market Vendor Endpoints' do
 
         attributes = vendor[:attributes]
 
-        expect(attributes).to have_key(:name)
-        expect(attributes[:name]).to be_a(String)
-
-        expect(attributes).to have_key(:description)
-        expect(attributes[:description]).to be_a(String)
-
-        expect(attributes).to have_key(:contact_name)
-        expect(attributes[:contact_name]).to be_a(String)
-
-        expect(attributes).to have_key(:contact_phone)
-        expect(attributes[:contact_phone]).to be_a(String)
+        keys = [:name, :description, :contact_name, :contact_phone]
+        keys.each do |key|
+          expect(attributes).to have_key(key)
+          expect(attributes[key]).to be_a(String)
+        end
 
         expect(attributes).to have_key(:credit_accepted)
         expect(attributes[:credit_accepted]).to be_in([true, false])

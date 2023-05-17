@@ -42,29 +42,11 @@ describe 'Market Endpoints' do
 
         attributes = market[:attributes]
 
-        expect(attributes).to have_key(:name)
-        expect(attributes[:name]).to be_a(String)
-
-        expect(attributes).to have_key(:street)
-        expect(attributes[:street]).to be_a(String)
-
-        expect(attributes).to have_key(:city)
-        expect(attributes[:city]).to be_a(String)
-
-        expect(attributes).to have_key(:county)
-        expect(attributes[:county]).to be_a(String)
-
-        expect(attributes).to have_key(:state)
-        expect(attributes[:state]).to be_a(String)
-
-        expect(attributes).to have_key(:zip)
-        expect(attributes[:zip]).to be_a(String)
-
-        expect(attributes).to have_key(:lat)
-        expect(attributes[:lat]).to be_a(String)
-
-        expect(attributes).to have_key(:lon)
-        expect(attributes[:lon]).to be_a(String)
+        keys = [:name, :street, :city, :county, :state, :zip, :lat, :lon]
+        keys.each do |key|
+          expect(attributes).to have_key(key)
+          expect(attributes[key]).to be_a(String)
+        end
 
         expect(attributes).to have_key(:vendor_count)
         expect(attributes[:vendor_count]).to be_an(Integer)
@@ -105,38 +87,19 @@ describe 'Market Endpoints' do
       expect(market[:attributes]).to be_a(Hash)
 
       attributes = market[:attributes]
+      keys = [:name, :street, :city, :county, :state, :zip, :lat, :lon]
+      keys.each do |key|
+        expect(attributes).to have_key(key)
+        expect(attributes[key]).to be_a(String)
+      end
 
-      expect(attributes).to have_key(:name)
-      expect(attributes[:name]).to be_a(String)
       expect(attributes[:name]).to eq(market_1.name)
-
-      expect(attributes).to have_key(:street)
-      expect(attributes[:street]).to be_a(String)
       expect(attributes[:street]).to eq(market_1.street)
-
-      expect(attributes).to have_key(:city)
-      expect(attributes[:city]).to be_a(String)
       expect(attributes[:city]).to eq(market_1.city)
-
-      expect(attributes).to have_key(:county)
-      expect(attributes[:county]).to be_a(String)
       expect(attributes[:county]).to eq(market_1.county)
-
-      expect(attributes).to have_key(:state)
-      expect(attributes[:state]).to be_a(String)
       expect(attributes[:state]).to eq(market_1.state)
-
-      expect(attributes).to have_key(:zip)
-      expect(attributes[:zip]).to be_a(String)
       expect(attributes[:zip]).to eq(market_1.zip)
-
-      expect(attributes).to have_key(:lat)
-      expect(attributes[:lat]).to be_a(String)
       expect(attributes[:lat]).to eq(market_1.lat)
-
-
-      expect(attributes).to have_key(:lon)
-      expect(attributes[:lon]).to be_a(String)
       expect(attributes[:lon]).to eq(market_1.lon)
 
       expect(attributes).to have_key(:vendor_count)

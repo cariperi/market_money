@@ -30,20 +30,15 @@ describe 'Vendor Endpoints' do
 
       attributes = vendor[:attributes]
 
-      expect(attributes).to have_key(:name)
-      expect(attributes[:name]).to be_a(String)
+      keys = [:name, :description, :contact_name, :contact_phone]
+      keys.each do |key|
+        expect(attributes).to have_key(key)
+        expect(attributes[key]).to be_a(String)
+      end
+
       expect(attributes[:name]).to eq(vendor_1.name)
-
-      expect(attributes).to have_key(:description)
-      expect(attributes[:description]).to be_a(String)
       expect(attributes[:description]).to eq(vendor_1.description)
-
-      expect(attributes).to have_key(:contact_name)
-      expect(attributes[:contact_name]).to be_a(String)
       expect(attributes[:contact_name]).to eq(vendor_1.contact_name)
-
-      expect(attributes).to have_key(:contact_phone)
-      expect(attributes[:contact_phone]).to be_a(String)
       expect(attributes[:contact_phone]).to eq(vendor_1.contact_phone)
 
       expect(attributes).to have_key(:credit_accepted)
@@ -107,20 +102,15 @@ describe 'Vendor Endpoints' do
 
       attributes = vendor[:attributes]
 
-      expect(attributes).to have_key(:name)
-      expect(attributes[:name]).to be_a(String)
+      keys = [:name, :description, :contact_name, :contact_phone]
+      keys.each do |key|
+        expect(attributes).to have_key(key)
+        expect(attributes[key]).to be_a(String)
+      end
+
       expect(attributes[:name]).to eq(created_vendor.name)
-
-      expect(attributes).to have_key(:description)
-      expect(attributes[:description]).to be_a(String)
       expect(attributes[:description]).to eq(created_vendor.description)
-
-      expect(attributes).to have_key(:contact_name)
-      expect(attributes[:contact_name]).to be_a(String)
       expect(attributes[:contact_name]).to eq(created_vendor.contact_name)
-
-      expect(attributes).to have_key(:contact_phone)
-      expect(attributes[:contact_phone]).to be_a(String)
       expect(attributes[:contact_phone]).to eq(created_vendor.contact_phone)
 
       expect(attributes).to have_key(:credit_accepted)
@@ -186,20 +176,15 @@ describe 'Vendor Endpoints' do
 
       attributes = vendor[:attributes]
 
-      expect(attributes).to have_key(:name)
-      expect(attributes[:name]).to be_a(String)
+      keys = [:name, :description, :contact_name, :contact_phone]
+      keys.each do |key|
+        expect(attributes).to have_key(key)
+        expect(attributes[key]).to be_a(String)
+      end
+
       expect(attributes[:name]).to eq(original_name)
-
-      expect(attributes).to have_key(:description)
-      expect(attributes[:description]).to be_a(String)
       expect(attributes[:description]).to eq(vendor_params[:description])
-
-      expect(attributes).to have_key(:contact_name)
-      expect(attributes[:contact_name]).to be_a(String)
       expect(attributes[:contact_name]).to eq(original_contact_name)
-
-      expect(attributes).to have_key(:contact_phone)
-      expect(attributes[:contact_phone]).to be_a(String)
       expect(attributes[:contact_phone]).to eq(vendor_params[:contact_phone])
 
       expect(attributes).to have_key(:credit_accepted)
