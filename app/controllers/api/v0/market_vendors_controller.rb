@@ -1,6 +1,7 @@
 class Api::V0::MarketVendorsController < ApplicationController
   before_action :find_market, only: [:index]
   before_action :find_market_vendor, only: [:destroy]
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found_response
 
   def index
     render json: VendorSerializer.new(@market.vendors)
@@ -29,8 +30,7 @@ class Api::V0::MarketVendorsController < ApplicationController
     end
 
     def find_market
-      @market = Market.find_by(id: params[:market_id])
-      render_not_found_response(Market, params[:market_id]) if @market.nil?
+      @market = Market.find(params[:market_id])
     end
 
     def find_market_vendor

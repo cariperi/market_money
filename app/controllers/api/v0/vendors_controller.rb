@@ -1,5 +1,6 @@
 class Api::V0::VendorsController < ApplicationController
   before_action :find_vendor, only: [:show, :update, :destroy]
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found_response
 
   def show
     render json: VendorSerializer.new(@vendor)
@@ -33,7 +34,6 @@ class Api::V0::VendorsController < ApplicationController
     end
 
     def find_vendor
-      @vendor = Vendor.find_by(id: params[:id])
-      render_not_found_response(Vendor, params[:id]) if @vendor.nil?
+      @vendor = Vendor.find(params[:id])
     end
 end
