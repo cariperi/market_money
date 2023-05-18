@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'ATM Finder Endpoint' do
   describe 'Get Cash Dispensers Near a Market' do
     it 'returns atms near the location of a given market' do
+    VCR.use_cassette("market_with_known_lat_lon") do
       market = create(:market, lat: 35.07904, lon: -106.60068)
 
       get "/api/v0/markets/#{market.id}/nearest_atms"
@@ -47,7 +48,7 @@ RSpec.describe 'ATM Finder Endpoint' do
         end
         end
       end
-
+    end
     end
 
     it 'returns an error if invalid market id is passed in' do
