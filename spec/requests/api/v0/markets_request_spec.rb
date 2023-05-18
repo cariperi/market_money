@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Market Endpoints' do
+RSpec.describe 'Market Endpoints' do
   describe 'Get All Markets' do
     it 'sends a list of all markets' do
       market_1 = create(:market)
