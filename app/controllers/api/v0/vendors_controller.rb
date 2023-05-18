@@ -1,26 +1,19 @@
 class Api::V0::VendorsController < ApplicationController
   before_action :find_vendor, only: [:show, :update, :destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_response
+  rescue_from ActiveRecord::RecordInvalid, with: :failed_validation_response
 
   def show
     render json: VendorSerializer.new(@vendor)
   end
 
   def create
-    vendor = Vendor.create(vendor_params)
-    if vendor.valid?
-      render json: VendorSerializer.new(vendor), status: 201
-    else
-      render_failed_validation_response(vendor)
-    end
+    render json: VendorSerializer.new(Vendor.create!(vendor_params)), status: 201
   end
 
   def update
-    if @vendor.update(vendor_params)
-      render json: VendorSerializer.new(@vendor)
-    else
-      render_failed_validation_response(@vendor)
-    end
+    @vendor.update!(vendor_params)
+    render json: VendorSerializer.new(@vendor)
   end
 
   def destroy
@@ -28,7 +21,6 @@ class Api::V0::VendorsController < ApplicationController
   end
 
   private
-
     def vendor_params
       params.require(:vendor).permit(:name, :description, :contact_name, :contact_phone, :credit_accepted)
     end
