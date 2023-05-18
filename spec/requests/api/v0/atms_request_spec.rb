@@ -16,7 +16,7 @@ RSpec.describe 'ATM Finder Endpoint' do
       atms = data[:data]
       expect(atms).to be_an(Array)
 
-      atms.each do |atm|
+      atms.each_with_index do |atm, i|
         expect(atm).to be_a(Hash)
 
         expect(atm).to have_key(:id)
@@ -41,8 +41,13 @@ RSpec.describe 'ATM Finder Endpoint' do
         float_keys.each do |key|
           expect(attributes).to have_key(key)
           expect(attributes[key]).to be_a(Float)
+
+        if i < atms.length - 1
+          expect(atms[i][:attributes][:distance]).to be < (atms[(i+1)][:attributes][:distance])
+        end
         end
       end
+
     end
 
     it 'returns an error if invalid market id is passed in' do
