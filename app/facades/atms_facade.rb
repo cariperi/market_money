@@ -1,4 +1,6 @@
 class AtmsFacade
+  attr_reader :market
+
   def initialize(market)
     @market = market
   end
