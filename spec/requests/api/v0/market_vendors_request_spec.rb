@@ -157,9 +157,10 @@ describe 'Market Vendor Endpoints' do
       expect(response.status).to eq(400)
 
       data = JSON.parse(response.body, symbolize_names: true)
-      expect(data).to have_key(:message)
+      expect(data).to have_key(:errors)
 
-      expect(data[:message]).to eq("Market ID and Vendor ID must be provided")
+      error = data[:errors][0][:detail]
+      expect(error).to eq("Validation failed: Market must exist, Vendor must exist")
     end
 
     it 'returns a custom error mesage if the association already exists' do
