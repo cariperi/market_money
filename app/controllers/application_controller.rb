@@ -1,14 +1,24 @@
 class ApplicationController < ActionController::API
-  def render_not_found_response(model, id)
-    error_message = "Couldn't find #{model.name} with 'id'=#{id}"
-    error = Error.new(error_message, 404)
-    render json: ErrorSerializer.format_error(error), status: error.status_code
+  def not_found_response(error)
+    error_object = Error.new(error.message, 404)
+    render json: ErrorSerializer.format_error(error_object), status: error_object.status_code
   end
 
-  def render_failed_validation_response(model)
-    errors = model.errors.full_messages.join(", ")
-    error_message = "Validation failed: #{errors}"
-    error = Error.new(error_message, 400)
-    render json: ErrorSerializer.format_error(error), status: error.status_code
+  def failed_validation_response(error)
+    error_object = Error.new(error.message, set_error_code(error.record))
+    render json: ErrorSerializer.format_error(error_object), status: error_object.status_code
   end
+
+  private
+    def set_error_code(record)
+      if record.errors.any? {|e| e.type == :already_exists}
+        422
+      elsif record.class == MarketVendor && (record.market_id.nil? || record.vendor_id.nil?)
+        400
+      elsif record.class == Vendor
+        400
+      else
+        404
+      end
+    end
 end
