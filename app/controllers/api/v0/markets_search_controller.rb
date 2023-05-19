@@ -23,8 +23,7 @@ class Api::V0::MarketsSearchController < ApplicationController
     end
 
     def render_invalid_params_response
-      error_message = "Invalid set of parameters. Please provide a valid set of parameters to perform a search with this endpoint."
-      error = Error.new(error_message, 422)
+      error = Error.new("Invalid set of parameters. Please provide a valid set of parameters to perform a search with this endpoint.", 422)
       render json: ErrorSerializer.format_error(error), status: error.status_code
     end
 end
